@@ -12,6 +12,7 @@ using ariel::Algorithms;
 #include <vector>
 using namespace std;
 
+
 int main()
 {
     ariel::Graph g;
