@@ -28,21 +28,7 @@ class Graph{
             for(unsigned long i=0;i<vec1.size();i++)
                 for(unsigned long j=0;j<vec1.size();j++)
                 {
-                    if(vec1[i][j]!=0 && i!=j)
-                        if(vec1[i][j]!=vec1[i][j] && vec1[j][i]!=0)
-                        {
-                            countEdges+=2;
-                            vec1[i][j]=0;
-                            vec1[j][i]=0;
-                        }
-                        if(vec1[i][j]==vec1[i][j] && vec1[j][i]!=0)
-                        {
-                            countEdges++;
-                            vec1[i][j]=0;
-                            vec1[j][i]=0;
-                        }
-                        else
-                            countEdges++;
+                    countEdges++;
                 }
             numOfEdges=countEdges;   
         }
