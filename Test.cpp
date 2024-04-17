@@ -3,7 +3,8 @@
 #include "Graph.hpp"
 
 using namespace std;
-
+using ariel::Algorithms;
+using ariel::Graph;
 TEST_CASE("Test isConnected")
 {
     ariel::Graph g;

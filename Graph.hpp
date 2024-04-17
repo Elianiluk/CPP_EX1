@@ -2,6 +2,7 @@
 #define GRAPH_H
 
 #include <vector>
+#include <iostream>
 namespace ariel{
 class Graph{
     private:
@@ -12,6 +13,8 @@ class Graph{
         Graph();
         void loadGraph(std::vector<std::vector<int>> vec1);
         void printGraph();
+        int Graph::getVertices();
+        int Graph::getEdges();
 };
 }
 #endif //GRAPH_H
