@@ -13,8 +13,10 @@ class Graph{
         Graph();
         void loadGraph(std::vector<std::vector<int>> vec1);
         void printGraph();
-        int Graph::getVertices();
-        int Graph::getEdges();
+        int getVertices();
+        int getEdges();
+        std::vector<std::vector<int>> getGraph();
+
 };
 }
 #endif //GRAPH_H

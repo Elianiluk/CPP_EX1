@@ -4,7 +4,7 @@
 
 namespace ariel {
 
-    Graph::Graph() : numOfEdges(0), numOfVertices(0) {}
+    Graph::Graph() : numOfEdges(0), numOfVertices(0), vec() {}
 
     void Graph::loadGraph(std::vector<std::vector<int>> vec1) {
         if(vec1.size() != vec1[0].size()) {
@@ -26,6 +26,8 @@ namespace ariel {
 
     int Graph::getVertices(){return numOfVertices;}
     int Graph::getEdges(){return numOfEdges;}
+    std::vector<std::vector<int>> Graph::getGraph() {return vec;}
+    
 
     void Graph::printGraph() {
         std::cout << "Graph with " << numOfVertices << " vertices and " << numOfEdges << " edges" << std::endl;
