@@ -14,9 +14,7 @@ namespace ariel {
             static bool negativeCycle(Graph g); 
             static bool isPath(std::vector<std::vector<int>> edges,unsigned long src,int des);
             static bool isPathHelp(std::vector<std::vector<int>> edges,unsigned long src,int des,std::vector<bool> visited);
-            // static bool isContainsCycleUtil(Graph g, unsigned long v, std::vector<bool>& visited, std::vector<bool>& recStack);
-            // static void printCycle(Graph g, unsigned long start, int end);
-
+            static bool hasCycleDFS(Graph graph, unsigned long node, std::vector<bool>& visited, std::vector<int>& parent, std::vector<std::vector<int>>& cycles);
     };
 }
 

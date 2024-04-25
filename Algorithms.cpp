@@ -40,60 +40,62 @@ namespace ariel {
     }
 
      bool Algorithms::isContainsCycle(Graph g) {
-        // int v=g.getVertices();
-        // std::vector<bool> visited(static_cast<std::vector<bool>::size_type>(v), false);
-        // std::vector<bool> recStack(static_cast<std::vector<bool>::size_type>(v), false);
+        std::vector<int>::size_type n = static_cast<std::vector<int>::size_type>(g.getVertices());
+        std::vector<bool> visited(n, false);
+        std::vector<int> parent(n, -1);
+        std::vector<std::vector<int>> cycles;
 
+        for (unsigned long i = 0; i < n; ++i) {
+            if (!visited[i]) {
+                if (hasCycleDFS(g, i, visited, parent, cycles)) {
+                    // Cycle detected, print the cycle(s)
+                    for (const auto& cycle : cycles) {
+                        std::string result;
+                        for (size_t j = 0; j < cycle.size(); ++j) {
+                            if (j > 0) result += "->"; // Add arrows between nodes
+                            result += std::to_string(cycle[j]);
+                        }
+                        std::cout << result;
+                        std::cout << ",";
+                        return true; // Return the first found cycle
+                    }
+                }
+            }
+        }
+        // No cycle found
+        return false;
+    } 
 
-        // for (unsigned long i=0;i<v;i++) {
-        //     if (isContainsCycleUtil(g, i, visited, recStack)) {
-        //         std::cout << "Graph contains a cycle." << std::endl;
-        //         return true;
-        //     }
-        // }
+    bool Algorithms::hasCycleDFS(Graph graph, unsigned long node, std::vector<bool>& visited, std::vector<int>& parent, std::vector<std::vector<int>>& cycles) 
+    {
+        visited[node] = true;
 
-        // std::cout << "Graph does not contain a cycle." << std::endl;
+        auto adjacencyMatrix = graph.getGraph();
+        for (unsigned long i = 0; i < graph.getVertices(); ++i) {
+            if (adjacencyMatrix[node][i]) {
+                if (!visited[i]) {
+                 parent[i] = node;
+                    if (hasCycleDFS(graph, i, visited, parent, cycles)) {
+                        return true;
+                    }
+                } else if (parent[node] != i) {
+                 // Cycle detected, backtrack to find the cycle path
+                    std::vector<int> cycle;
+                    int cur = node;
+                    while (cur != i) {
+                        cycle.push_back(cur);
+                        cur = parent[static_cast<std::vector<int>::size_type>(cur)];
+
+                    }
+                    cycle.push_back(i);
+                    cycle.push_back(node);
+                    cycles.push_back(cycle);
+                    return true;
+                }
+            }
+        }
         return false;
     }
-
-    //  bool Algorithms::isContainsCycleUtil(Graph g, unsigned long v, std::vector<bool>& visited, std::vector<bool>& recStack) {
-    //     if (!visited[v]) {
-    //         visited[v] = true;
-    //         recStack[v] = true;
-
-    //         std::vector<std::vector<int>> adj = g.getGraph();
-    //         for (unsigned long i = 0; i < g.getVertices(); ++i) {
-    //             if (adj[v][i] && !visited[i] && isContainsCycleUtil(g, i, visited, recStack)) {
-    //                 return true;
-    //             } else if (recStack[i]) {
-    //                 // Cycle found, print it
-    //                 printCycle(g, v, i);
-    //                 return true;
-    //             }
-    //         }
-    //     }
-    //     recStack[v] = false; // Remove the vertex from recursion stack
-    //     return false;
-    // }
-
-    //  void Algorithms::printCycle(Graph g, unsigned long start,int end) {
-    //     std::vector<std::vector<int>> adj = g.getGraph();
-    //     std::vector<int> path;
-    //     path.push_back(end);
-    //     while (start != end) {
-    //         path.push_back(start);
-    //         end = start;
-    //         for (unsigned long i = 0; i < g.getVertices(); ++i) {
-    //             if (adj[start][i] && i != start) {
-    //                 start = i;
-    //                 break;
-    //             }
-    //         }
-    //     }
-    //     for (unsigned long i = path.size()-1; i >= 0; --i)
-    //         std::cout << path[i] << "->";
-        
-    // }
 
     std::string Algorithms::shortestPath(Graph g, int src,int des) {
         std::vector<int>::size_type numVertices = static_cast<std::vector<int>::size_type>(g.getVertices());
@@ -151,10 +153,6 @@ namespace ariel {
         return "";
     }
 
-
-    
-
-
     std::string Algorithms::isBipartite(Graph g) {
         // Implement the isBipartite algorithm here
         // You can use Breadth-First Search (BFS) or Depth-First Search (DFS) to check if the graph is bipartite
@@ -163,10 +161,41 @@ namespace ariel {
     }
 
     bool Algorithms::negativeCycle(Graph g) {
-        // Implement the isContainsCycle algorithm here
-        // You can use Depth-First Search (DFS) to detect cycles in the graph
-        // Return true if the graph contains a cycle, otherwise false
-        return false; // Placeholder
+        std::vector<int>::size_type n = static_cast<std::vector<int>::size_type>(g.getVertices());
+        std::vector<bool> visited(n, false);
+        std::vector<int> parent(n, -1);
+        std::vector<std::vector<int>> cycles;
+        std::vector<std::vector<int>> edges=g.getGraph();
+
+        for (unsigned long i = 0; i < n; ++i) {
+            if (!visited[i]) {
+                if (hasCycleDFS(g, i, visited, parent, cycles)) {
+                    // Cycle detected, print the cycle(s)
+                    int sum=0;
+                    for (auto cycle : cycles) {
+                        std::string result;
+                        for (size_t j = 0; j < cycle.size(); ++j) {
+                            if (j > 0) result += "->"; // Add arrows between nodes
+                            result += std::to_string(cycle[j]);
+                            if(j<cycle.size()-1)
+                                sum += edges[static_cast<std::vector<std::vector<int>>::size_type>(cycle[j])][static_cast<std::vector<std::vector<int>>::size_type>(cycle[j + 1])]; // Calculate the sum of edge weights
+                        }
+                        if(sum<0)
+                        {
+                            std::cout << result;
+                            std::cout << ",";
+                            std::cout << "the sum is: " << sum;
+                            std::cout << ",";
+                            return true; // Return the first found cycle
+                        }
+                    }
+                }
+            }
+        }
+        // No cycle found
+        std::cout << "doesnt contain a negative cycle";
+        std::cout << ",";
+        return false;
     }
 
 }
