@@ -5,15 +5,18 @@
 
 namespace ariel {
 
-
+    /*a function that trying to detect if there is a pth from src to des recursivly
+      we start at src and we are walking over the graph trying to get to the des,
+      each time going step by step through the vertices, return TRUE if there is a path
+      return FALSE if there is no path from src to des*/
     bool Algorithms::isPathHelp(const std::vector<std::vector<int>> edges, unsigned long src, int des, std::vector<bool> visited) {
-        if (src == des) {
+        if (src == des) {//if we manage to get to des, it means there is a path and return TRUE
             return true;
         }
-        visited[src] = true;
+        visited[src] = true;//mark the vertice we are on him now as true because we can get to him from the original src
         for (unsigned long i = 0; i < edges.size(); i++) {
-            if (edges[src][i] && !visited[i]) {
-                if (isPathHelp(edges, i, des, visited)) {
+            if (edges[src][i] && !visited[i]) {//going through the vertices we can get from src and trying to get to des
+                if(isPathHelp(edges, i, des, visited)) {//trying to find a path from i to des because we can get to i from src
                     return true;
                 }
             }
@@ -21,17 +24,23 @@ namespace ariel {
         return false;
     }
 
+    /*help function that add an array to detect to which vertices we can get from src
+      and send it to another help function "isPathHelp"*/
     bool Algorithms::isPath(const std::vector<std::vector<int>> edges, unsigned long src, int des) {
         std::vector<bool> visited(edges.size(), false);
         return isPathHelp(edges, src, des, visited);
     }
 
+    /*function to check if graph is strongly connected, to know that
+      we going through all the vertces and trying to understand if there is 
+      a path from each vertice to any other vertice, if yes return 1
+      if there is a vertice which we cant get to from other vertice return 0*/
     int Algorithms::isConnected(Graph g) {
         int numVertices = g.getVertices();
         std::vector<std::vector<int>> edges = g.getGraph();
         for (unsigned long i = 0; i < numVertices; i++) {
             for (unsigned long j = 0; j < numVertices; j++) {
-                if (!isPath(edges, i, j)) {
+                if (!isPath(edges, i, j)) {//calling a function that detects if there is a pth from i to j
                     return 0;
                 }
             }
@@ -97,18 +106,19 @@ namespace ariel {
         return false;
     }
 
+    /*function to detect the shortest path from src to des using bellman ford
+      (because the graph can have negative weights), return the shortest path from src to des is exist
+      return -1 if there is no path from src to des*/
     std::string Algorithms::shortestPath(Graph g, int src,int des) {
-        std::vector<int>::size_type numVertices = static_cast<std::vector<int>::size_type>(g.getVertices());
-        // std::vector<int> dist(numVertices, 1000);
         int v= g.getVertices();
-        int dist[v];
+        int dist[v];//an array that comsume the shortest path from src to any other vertice
         for(int i=0;i<v;i++)
-            dist[i]=1000;
-        dist[src] = 0;
+            dist[i]=1000;//intiallize the shortest path from src to any other vertice to infinity
+        dist[src] = 0;//there is no edge from src to itself
 
         std::vector<std::vector<int>> edges = g.getGraph();
 
-        // Relax all edges V-1 times
+        // Relax all edges V-1 times, bellman ford algorithm
         for (unsigned long i = 0; i < g.getVertices() - 1; ++i) {
             for (unsigned long u = 0; u < g.getVertices(); ++u) {
                 for (unsigned long v = 0; v < g.getVertices(); ++v) {
@@ -128,6 +138,7 @@ namespace ariel {
             }
         }
         
+        //if we find a path from src to des shorter than infinity return its weight, else return -1
         if(dist[des]>=1000)
             std::cout << "-1";
         else
@@ -153,12 +164,45 @@ namespace ariel {
         return "";
     }
 
+    /*in this function we check if a graph is bipartite, to detect this
+      we try to colour the grph using 2 colour exactly, if it can be done
+      it mean that we can divide the vertices into 2 groups independently and we will return YES,
+      if we cant, it means we cant divide the vertices and we will return NO*/
+
     std::string Algorithms::isBipartite(Graph g) {
-        // Implement the isBipartite algorithm here
-        // You can use Breadth-First Search (BFS) or Depth-First Search (DFS) to check if the graph is bipartite
-        // Return "Yes" if the graph is bipartite, "No" otherwise
-        return ""; // Placeholder
+        int numVertices = g.getVertices();
+        std::vector<int> colors(static_cast<size_t>(numVertices), -1); // Initialize colors for each vertex (-1: not colored, 0: color 1, 1: color 2)
+        std::queue<int> q;
+
+        // Start BFS traversal from each uncolored vertex
+        for (unsigned long i = 0; i < numVertices; ++i) {
+            if (colors[i] == -1) {
+                q.push(i);
+                colors[i] = 0; // Assign color 0 to the source vertex
+
+                while (!q.empty()) {
+                    unsigned long u = static_cast<size_t>(q.front());
+                    q.pop();
+
+                    //going through u neighbors and check if its the same colour and action properly
+                    std::vector<int> neighbors = g.getGraph()[u];
+                    for (unsigned long v = 0; v < numVertices; ++v) {
+                        if (neighbors[v] != 0) { // If v and u are neigbors
+                            if (colors[v] == -1) { // If v is not colored
+                                colors[v] = 1 - colors[u]; // Assign the opposite color of u to v
+                                q.push(v);
+                            } else if (colors[v] == colors[u]) { // If v has the same color as u
+                                return "No"; // Graph is not bipartite
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return "Yes"; // Graph is bipartite
     }
+ 
+
 
     bool Algorithms::negativeCycle(Graph g) {
         std::vector<int>::size_type n = static_cast<std::vector<int>::size_type>(g.getVertices());
