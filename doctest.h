@@ -7,7 +7,7 @@
 // Copyright (c) 2016-2023 Viktor Kirilov
 //
 // Distributed under the MIT Software License
-// See accompanying file LICENSE.txt or copy at
+// See accompanying file LICENSE.txt or copy at      
 // https://opensource.org/licenses/MIT
 //
 // The documentation can be found at the library's page:
