@@ -2,6 +2,7 @@
 #include <queue>
 #include <vector>
 #include <iostream>
+#include <limits>
 
 namespace ariel {
 
@@ -31,10 +32,14 @@ namespace ariel {
         return isPathHelp(edges, src, des, visited);
     }
 
-    /*function to check if graph is strongly connected, to know that
+    /**
+     * function to check if graph is strongly connected, to know that
       we going through all the vertces and trying to understand if there is 
       a path from each vertice to any other vertice, if yes return 1
-      if there is a vertice which we cant get to from other vertice return 0*/
+      if there is a vertice which we cant get to from other vertice return 0
+      @param Graph g- graph
+      @return true if the graph is connected, false if not connected
+      */
     int Algorithms::isConnected(Graph g) {
         int numVertices = g.getVertices();
         std::vector<std::vector<int>> edges = g.getGraph();
@@ -113,7 +118,7 @@ namespace ariel {
         int v= g.getVertices();
         int dist[v];//an array that comsume the shortest path from src to any other vertice
         for(int i=0;i<v;i++)
-            dist[i]=1000;//intiallize the shortest path from src to any other vertice to infinity
+            dist[i]=std::numeric_limits<int>::max();//intiallize the shortest path from src to any other vertice to infinity
         dist[src] = 0;//there is no edge from src to itself
 
         std::vector<std::vector<int>> edges = g.getGraph();
@@ -132,14 +137,14 @@ namespace ariel {
         // Check for negative cycles
         for (unsigned long u = 0; u < g.getVertices(); ++u) {
             for (unsigned long v = 0; v < g.getVertices(); ++v) {
-                if (edges[u][v] != 0 && dist[u] != 1000 && dist[u] + edges[u][v] < dist[v]) {
+                if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
                     return "Negative cycle detected.";
                 }
             }
         }
         
         //if we find a path from src to des shorter than infinity return its weight, else return -1
-        if(dist[des]>=1000)
+        if(dist[des]>=std::numeric_limits<int>::max())
             std::cout << "-1";
         else
             std::cout << dist[des];    
@@ -171,75 +176,95 @@ namespace ariel {
 
     std::string Algorithms::isBipartite(Graph g) {
         int numVertices = g.getVertices();
-        std::vector<int> colors(static_cast<size_t>(numVertices), -1); // Initialize colors for each vertex (-1: not colored, 0: color 1, 1: color 2)
-        std::queue<int> q;
+    std::vector<int> colors(static_cast<size_t>(numVertices), -1); // Initialize colors for each vertex
+    std::queue<int> q;
 
-        // Start BFS traversal from each uncolored vertex
-        for (unsigned long i = 0; i < numVertices; ++i) {
-            if (colors[i] == -1) {
-                q.push(i);
-                colors[i] = 0; // Assign color 0 to the source vertex
+    std::vector<int> group1, group2; // To store the two groups
 
-                while (!q.empty()) {
-                    unsigned long u = static_cast<size_t>(q.front());
-                    q.pop();
+    // Start BFS traversal from each uncolored vertex
+    for (unsigned long i = 0; i < numVertices; ++i) {
+        if (colors[i] == -1) {
+            q.push(i);
+            colors[i] = 0; // Assign color 0 to the source vertex
+            group1.push_back(i); // Add to group 1
 
-                    //going through u neighbors and check if its the same colour and action properly
-                    std::vector<int> neighbors = g.getGraph()[u];
-                    for (unsigned long v = 0; v < numVertices; ++v) {
-                        if (neighbors[v] != 0) { // If v and u are neigbors
-                            if (colors[v] == -1) { // If v is not colored
-                                colors[v] = 1 - colors[u]; // Assign the opposite color of u to v
-                                q.push(v);
-                            } else if (colors[v] == colors[u]) { // If v has the same color as u
-                                return "No"; // Graph is not bipartite
+            while (!q.empty()) {
+                unsigned long u = static_cast<size_t>(q.front());
+                q.pop();
+
+                // Access neighbors
+                std::vector<int> neighbors = g.getGraph()[u];
+                for (unsigned long v = 0; v < numVertices; ++v) {
+                    if (neighbors[v] != 0) { // If v and u are neighbors
+                        if (colors[v] == -1) { // If v is not colored
+                            colors[v] = 1 - colors[u]; // Assign the opposite color of u to v
+                            q.push(v);
+
+                            if (colors[v] == 0) {
+                                group1.push_back(v); // Add to group 1
+                            } else {
+                                group2.push_back(v); // Add to group 2
                             }
+                        } else if (colors[v] == colors[u]) { // If v has the same color as u
+                            return "The graph isn't bipartite";
                         }
                     }
                 }
             }
         }
-        return "Yes"; // Graph is bipartite
+    }
+
+    // If the graph is bipartite, build a result string showing the two groups
+    std::string result = "The graph is bipartite:A={";
+    for (int vertex : group1) {
+        result += std::to_string(vertex) + ",";
+    }
+    result += "}, B={";
+    for (int vertex : group2) {
+        result += std::to_string(vertex) + ",";
+    }
+    result += "}";
+    
+    return result;
     }
  
 
 
-    bool Algorithms::negativeCycle(Graph g) {
-        std::vector<int>::size_type n = static_cast<std::vector<int>::size_type>(g.getVertices());
-        std::vector<bool> visited(n, false);
-        std::vector<int> parent(n, -1);
-        std::vector<std::vector<int>> cycles;
-        std::vector<std::vector<int>> edges=g.getGraph();
+    std::string Algorithms::negativeCycle(Graph g) {
+        int numVertices = g.getVertices();
+    std::vector<std::vector<int>> edges = g.getGraph();
 
-        for (unsigned long i = 0; i < n; ++i) {
-            if (!visited[i]) {
-                if (hasCycleDFS(g, i, visited, parent, cycles)) {
-                    // Cycle detected, print the cycle(s)
-                    int sum=0;
-                    for (auto cycle : cycles) {
-                        std::string result;
-                        for (size_t j = 0; j < cycle.size(); ++j) {
-                            if (j > 0) result += "->"; // Add arrows between nodes
-                            result += std::to_string(cycle[j]);
-                            if(j<cycle.size()-1)
-                                sum += edges[static_cast<std::vector<std::vector<int>>::size_type>(cycle[j])][static_cast<std::vector<std::vector<int>>::size_type>(cycle[j + 1])]; // Calculate the sum of edge weights
-                        }
-                        if(sum<0)
-                        {
-                            std::cout << result;
-                            std::cout << ",";
-                            std::cout << "the sum is: " << sum;
-                            std::cout << ",";
-                            return true; // Return the first found cycle
-                        }
+    // Initialize distance vector outside the initial for-loop since we are reinitializing for every start vertex
+    std::vector<int> dist(static_cast<std::vector<int>::size_type>(numVertices), std::numeric_limits<int>::max());
+
+    // Run Bellman-Ford from each vertex
+    for (unsigned long src = 0; src < numVertices; ++src) {
+        // Initialize distances from source
+        std::fill(dist.begin(), dist.end(), std::numeric_limits<int>::max());
+        dist[src] = 0;
+
+        // Relax all edges V-1 times
+        for (unsigned long i = 1; i < numVertices; ++i) {
+            for (unsigned long u = 0; u < numVertices; ++u) {
+                for (unsigned long v = 0; v < numVertices; ++v) {
+                    if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
+                        dist[v] = dist[u] + edges[u][v];
                     }
                 }
             }
         }
-        // No cycle found
-        std::cout << "doesnt contain a negative cycle";
-        std::cout << ",";
-        return false;
+
+        // Check for negative cycles
+        for (unsigned long u = 0; u < numVertices; ++u) {
+            for (unsigned long v = 0; v < numVertices; ++v) {
+                if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
+                    return "Negative cycle detected.";
+                }
+            }
+        }
+    }
+
+    return "No negative cycle detected.";
     }
 
 }

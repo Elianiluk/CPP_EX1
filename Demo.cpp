@@ -31,12 +31,13 @@ int main()
 
 
     // 5x5 matrix that represents a non-connected graph with a cycle.
-    vector<vector<int>> graph2 = {
-            {0, 1, 1, 0, 0},
-            {1, 0, 1, 0, 0},
-            {1, -100, 0, 1, 0},
-            {0, 0, 1, 0, 0},
-            {0, 0, 0, 0, 0}};
+    vector<vector<int>> graph2 = 
+        {{0,3,0,0,0,0},
+         {0,0,2,0,0,0},
+         {-8,0,0,0,0,0},
+         {0,0,0,0,4,0},
+         {0,0,0,0,0,5},
+         {0,0,0,0,0,0}};
 
     g.loadGraph(graph2); // Load the graph to the object.
 
@@ -51,7 +52,7 @@ int main()
     vector<vector<int>> graph3 = {
             {0, 1, 2, 0, 0},
             {1, 0, 3, 0, 0},
-            {2, -3, 0, 4, 0},
+            {2, -30, 0, 4, 0},
             {0, 0, 4, 0, 5},
             {0, 0, 0, 5, 0}};
     g.loadGraph(graph3); // Load the graph to the object.
