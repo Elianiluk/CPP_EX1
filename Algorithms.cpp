@@ -145,12 +145,12 @@ namespace ariel {
         
         //if we find a path from src to des shorter than infinity return its weight, else return -1
         if(dist[des]>=std::numeric_limits<int>::max())
-            std::cout << "-1";
+            return "-1";
         else
-            std::cout << dist[des];    
+            return std::to_string(dist[des]);    
 
-        // Construct the shortest path string
-        // int current = des;
+        //Construct the shortest path string
+        // unsigned long current = static_cast<unsigned long>(des);
         // std::vector<int> path;
         // while (current != src) {
         //     path.push_back(current);
@@ -161,12 +161,16 @@ namespace ariel {
         //         }
         //     }
         // }
+        // std::string sh;
         // path.push_back(src);
         // for (unsigned long i = path.size() - 1; i >= 0; --i) {
-        //     std::cout << path[i]; 
-        //     if (i != 0) std::cout << "->";
+        //     sh+=path[i]; 
+        //     if (i != 0) sh+= "->";
         // }
-        return "";
+        // if(dist[des]>=std::numeric_limits<int>::max())
+        //      return "-1";
+        // else 
+        //     return sh;     
     }
 
     /*in this function we check if a graph is bipartite, to detect this
@@ -206,7 +210,7 @@ namespace ariel {
                                 group2.push_back(v); // Add to group 2
                             }
                         } else if (colors[v] == colors[u]) { // If v has the same color as u
-                            return "The graph isn't bipartite";
+                            return "0";
                         }
                     }
                 }
@@ -215,13 +219,23 @@ namespace ariel {
     }
 
     // If the graph is bipartite, build a result string showing the two groups
-    std::string result = "The graph is bipartite:A={";
+    std::string result = "The graph is bipartite: A={";
+    int count=group1.size();
     for (int vertex : group1) {
-        result += std::to_string(vertex) + ",";
+        if(count!=1)
+            result += std::to_string(vertex) + ", ";
+        else
+            result += std::to_string(vertex);
+        count--;  
     }
     result += "}, B={";
+    int count2=group2.size();
     for (int vertex : group2) {
-        result += std::to_string(vertex) + ",";
+        if(count2!=1)
+            result += std::to_string(vertex) + ", ";
+        else
+            result += std::to_string(vertex);
+        count2--; 
     }
     result += "}";
     

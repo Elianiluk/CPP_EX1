@@ -12,7 +12,7 @@ TEST_CASE("Test isConnected")
         {0, 1, 0},
         {1, 0, 1},
         {0, 1, 0}};
-    g.loadGraph(graph);
+    g.loadGraph(graph); 
     CHECK(ariel::Algorithms::isConnected(g) == true);
 
     vector<vector<int>> graph2 = {
@@ -62,6 +62,13 @@ TEST_CASE("Test isContainsCycle")
         {0, 0, 0, 0, 0}};
     g.loadGraph(graph2);
     CHECK(ariel::Algorithms::isContainsCycle(g) == true);
+
+    vector<vector<int>> graph3= {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    g.loadGraph(graph3);
+    CHECK(ariel::Algorithms::isContainsCycle(g) == false);
 }
 TEST_CASE("Test isBipartite")
 {
@@ -83,13 +90,48 @@ TEST_CASE("Test isBipartite")
     CHECK(ariel::Algorithms::isBipartite(g) == "0");
 
     vector<vector<int>> graph3 = {
-        {0, 1, 2, 0, 0},
+        {0, 1, 0, 0, 0},
         {1, 0, 3, 0, 0},
-        {2, 3, 0, 4, 0},
+        {0, 3, 0, 4, 0},
         {0, 0, 4, 0, 5},
         {0, 0, 0, 5, 0}};
     g.loadGraph(graph3);
     CHECK(ariel::Algorithms::isBipartite(g) == "The graph is bipartite: A={0, 2, 4}, B={1, 3}");
+
+    vector<vector<int>> graph4= {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    g.loadGraph(graph4);
+    CHECK(ariel::Algorithms::isBipartite(g) == "The graph is bipartite: A={0, 1, 2}, B={}");
+}
+TEST_CASE("Test negative cycle")
+{
+    ariel::Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0, 0, 0},
+        {1, 0, 3, 0, 0},
+        {0, 3, 0, 4, 0},
+        {0, 0, 4, 0, 5},
+        {0, 0, 0, 5, 0}};
+    g.loadGraph(graph);
+    CHECK(ariel::Algorithms::negativeCycle(g) == "No negative cycle detected.");
+
+    vector<vector<int>> graph1 = {
+        {0, 1, 0, 0, 0},
+        {1, 0, 3, 0, 0},
+        {0, -30, 0, 4, 0},
+        {0, 0, 4, 0, 5},
+        {0, 0, 0, 5, 0}};
+    g.loadGraph(graph1);
+    CHECK(ariel::Algorithms::negativeCycle(g) == "Negative cycle detected.");
+
+    vector<vector<int>> graph2 = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph2);
+    CHECK(ariel::Algorithms::negativeCycle(g)== "No negative cycle detected.");
 }
 TEST_CASE("Test invalid graph")
 {
@@ -102,3 +144,4 @@ TEST_CASE("Test invalid graph")
         {0, 0, 0, 5}};
     CHECK_THROWS(g.loadGraph(graph));
 }
+
