@@ -144,33 +144,52 @@ namespace ariel {
         }
         
         //if we find a path from src to des shorter than infinity return its weight, else return -1
-        if(dist[des]>=std::numeric_limits<int>::max())
-            return "-1";
-        else
-            return std::to_string(dist[des]);    
+        // if(dist[des]>=std::numeric_limits<int>::max())
+        //     return "-1";
+        // else
+        //     return std::to_string(dist[des]);    
 
         //Construct the shortest path string
-        // unsigned long current = static_cast<unsigned long>(des);
-        // std::vector<int> path;
-        // while (current != src) {
-        //     path.push_back(current);
-        //     for (unsigned long v = 0; v < g.getVertices(); ++v) {
-        //         if (edges[v][current] != 0 && dist[current] == dist[v] + edges[v][current]) {
-        //             current = v;
-        //             break;
-        //         }
-        //     }
-        // }
-        // std::string sh;
-        // path.push_back(src);
-        // for (unsigned long i = path.size() - 1; i >= 0; --i) {
-        //     sh+=path[i]; 
+        if(dist[des]==std::numeric_limits<int>::max())
+            return "-1";
+        unsigned long current = static_cast<unsigned long>(des);
+        std::vector<int> path(static_cast<std::vector<int>::size_type>(g.getVertices()), -1);
+        unsigned long count=0;
+        while (current != src) {
+            path[count]=current;
+            //std::cout <<current;
+            for (unsigned long v = 0; v < g.getVertices(); ++v) {
+                if (edges[v][current] != 0 && dist[current] == dist[v] + edges[v][current]) {
+                    current = v;
+                    break;
+                }
+            }
+            count++;
+        }
+        path[count]=src;
+        //std::cout <<current<<"       ";
+        // std::cout <<path[count--]<<"->";
+        // std::cout <<path[count--]<<"->";
+        // std::cout <<path[count];
+        std::string sh;
+        // count++;
+        // path[count]=src;
+        // unsigned long j=count-1;
+        while(count!=0)
+        {
+            sh+=std::to_string(path[count--])+"->";
+            //count--;
+        }
+        sh+=std::to_string(path[count]);
+        // for (unsigned long i = count; i >= 0; --i) {
+        //     sh+=std::to_string(path[i]); 
         //     if (i != 0) sh+= "->";
         // }
-        // if(dist[des]>=std::numeric_limits<int>::max())
+        // if(dist[des]==std::numeric_limits<int>::max())
         //      return "-1";
         // else 
-        //     return sh;     
+        //     return sh;    
+        return sh; 
     }
 
     /*in this function we check if a graph is bipartite, to detect this
