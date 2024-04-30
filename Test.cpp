@@ -23,6 +23,20 @@ TEST_CASE("Test isConnected")
         {0, 0, 0, 0, 0}};
     g.loadGraph(graph2);
     CHECK(ariel::Algorithms::isConnected(g) == false);
+
+    vector<vector<int>> graph3= {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    g.loadGraph(graph3);
+    CHECK(ariel::Algorithms::isConnected(g) == false);
+
+    vector<vector<int>> graph4= {
+        {0, 1, 0},
+        {1, 0, 0},
+        {0, 0, 0}};
+    g.loadGraph(graph4);
+    CHECK(ariel::Algorithms::isConnected(g) == false);
 }
 
 TEST_CASE("Test shortestPath")
@@ -43,6 +57,13 @@ TEST_CASE("Test shortestPath")
         {0, 0, 0, 0, 0}};
     g.loadGraph(graph2);
     CHECK(ariel::Algorithms::shortestPath(g, 0, 4) == "-1");
+
+    vector<vector<int>> graph3= {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    g.loadGraph(graph3);
+    CHECK(ariel::Algorithms::shortestPath(g, 0, 2) == "-1");
 }
 TEST_CASE("Test isContainsCycle")
 {
@@ -131,6 +152,20 @@ TEST_CASE("Test negative cycle")
         {1, 0, 1},
         {0, 1, 0}};
     g.loadGraph(graph2);
+    CHECK(ariel::Algorithms::negativeCycle(g)== "No negative cycle detected.");
+
+    vector<vector<int>> graph5 = {
+        {0, 1, 0},
+        {-10, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph5);
+    CHECK(ariel::Algorithms::negativeCycle(g)== "Negative cycle detected.");
+
+    vector<vector<int>> graph3= {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    g.loadGraph(graph3);
     CHECK(ariel::Algorithms::negativeCycle(g)== "No negative cycle detected.");
 }
 TEST_CASE("Test invalid graph")
