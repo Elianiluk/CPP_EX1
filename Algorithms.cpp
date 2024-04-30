@@ -57,34 +57,35 @@ namespace ariel {
         }
         return 1;
     }
-
+    //funtion to detect and print if there is a cycle in the graph
      bool Algorithms::isContainsCycle(Graph g) {
         std::vector<int>::size_type n = static_cast<std::vector<int>::size_type>(g.getVertices());
         std::vector<bool> visited(n, false);
         std::vector<int> parent(n, -1);
         std::vector<std::vector<int>> cycles;
 
-        for (unsigned long i = 0; i < n; ++i) {
+        for (unsigned long i = 0; i < n; ++i) {//try to find a cycle from each vertice
             if (!visited[i]) {
-                if (hasCycleDFS(g, i, visited, parent, cycles)) {
-                    // Cycle detected, print the cycle(s)
+                if (hasCycleDFS(g, i, visited, parent, cycles)) {//run DFS and try to find a cycle from each vertice
+                    // cycle detected, print it
                     for (const auto& cycle : cycles) {
                         std::string result;
                         for (size_t j = 0; j < cycle.size(); ++j) {
-                            if (j > 0) result += "->"; // Add arrows between nodes
+                            if (j > 0) result += "->";
                             result += std::to_string(cycle[j]);
                         }
                         std::cout << result;
                         std::cout << ",";
-                        return true; // Return the first found cycle
+                        return true; // return the cycle
                     }
                 }
             }
         }
-        // No cycle found
+        // no cycle found
         return false;
     } 
 
+    //function that run DFS from a vertice and try to find a cycle
     bool Algorithms::hasCycleDFS(Graph graph, unsigned long node, std::vector<bool>& visited, std::vector<int>& parent, std::vector<std::vector<int>>& cycles) 
     {
         visited[node] = true;
@@ -98,7 +99,7 @@ namespace ariel {
                         return true;
                     }
                 } else if (parent[node] != i) {
-                 // Cycle detected, backtrack to find the cycle path
+                 // cycle detected, backtrack to find the cycle path
                     std::vector<int> cycle;
                     int cur = node;
                     while (cur != i) {
@@ -128,7 +129,7 @@ namespace ariel {
 
         std::vector<std::vector<int>> edges = g.getGraph();
 
-        // Relax all edges V-1 times, bellman ford algorithm
+        // relax all edges V-1 times, bellman ford algorithm
         for (unsigned long i = 0; i < g.getVertices() - 1; ++i) {
             for (unsigned long u = 0; u < g.getVertices(); ++u) {
                 for (unsigned long v = 0; v < g.getVertices(); ++v) {
@@ -139,7 +140,7 @@ namespace ariel {
             }
         }
 
-        // Check for negative cycles
+        // check for negative cycles
         for (unsigned long u = 0; u < g.getVertices(); ++u) {
             for (unsigned long v = 0; v < g.getVertices(); ++v) {
                 if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
@@ -154,7 +155,7 @@ namespace ariel {
         // else
         //     return std::to_string(dist[des]);    
 
-        //Construct the shortest path string
+        //construct the shortest path string from src to des
         if(dist[des]==std::numeric_limits<int>::max())
             return "-1";
         unsigned long current = static_cast<unsigned long>(des);
@@ -194,7 +195,7 @@ namespace ariel {
         //      return "-1";
         // else 
         //     return sh;    
-        return sh; 
+        return sh; //return the shortest path
     }
 
     /*in this function we check if a graph is bipartite, to detect this
@@ -204,36 +205,36 @@ namespace ariel {
 
     std::string Algorithms::isBipartite(Graph g) {
         int numVertices = g.getVertices();
-    std::vector<int> colors(static_cast<size_t>(numVertices), -1); // Initialize colors for each vertex
+    std::vector<int> colors(static_cast<size_t>(numVertices), -1); // initialize colors for each vertex
     std::queue<int> q;
 
-    std::vector<int> group1, group2; // To store the two groups
+    std::vector<int> group1, group2; // to store the two groups
 
-    // Start BFS traversal from each uncolored vertex
+    // start BFS from each uncolored vertex
     for (unsigned long i = 0; i < numVertices; ++i) {
         if (colors[i] == -1) {
             q.push(i);
-            colors[i] = 0; // Assign color 0 to the source vertex
-            group1.push_back(i); // Add to group 1
+            colors[i] = 0; // assign color 0 to the source vertex
+            group1.push_back(i); // add to group 1
 
             while (!q.empty()) {
                 unsigned long u = static_cast<size_t>(q.front());
                 q.pop();
 
-                // Access neighbors
+                // search the neighbors and action according to its color
                 std::vector<int> neighbors = g.getGraph()[u];
                 for (unsigned long v = 0; v < numVertices; ++v) {
-                    if (neighbors[v] != 0) { // If v and u are neighbors
-                        if (colors[v] == -1) { // If v is not colored
-                            colors[v] = 1 - colors[u]; // Assign the opposite color of u to v
+                    if (neighbors[v] != 0) { // if v and u are neighbors
+                        if (colors[v] == -1) { // if v is not colored
+                            colors[v] = 1 - colors[u]; // assign the opposite color of u to v
                             q.push(v);
 
                             if (colors[v] == 0) {
-                                group1.push_back(v); // Add to group 1
+                                group1.push_back(v); // add to group 1
                             } else {
-                                group2.push_back(v); // Add to group 2
+                                group2.push_back(v); // add to group 2
                             }
-                        } else if (colors[v] == colors[u]) { // If v has the same color as u
+                        } else if (colors[v] == colors[u]) { // if v has the same color as u it means thr graph isnt bipartite
                             return "0";
                         }
                     }
@@ -242,7 +243,7 @@ namespace ariel {
         }
     }
 
-    // If the graph is bipartite, build a result string showing the two groups
+    // if the graph is bipartite, build a result string showing the two groups
     std::string result = "The graph is bipartite: A={";
     int count=group1.size();
     for (int vertex : group1) {
@@ -263,36 +264,36 @@ namespace ariel {
     }
     result += "}";
     
-    return result;
+    return result;//return the divide into 2 independents groups
     }
  
 
 
     std::string Algorithms::negativeCycle(Graph g) {
         int numVertices = g.getVertices();
-    std::vector<std::vector<int>> edges = g.getGraph();
+        std::vector<std::vector<int>> edges = g.getGraph();
 
-    // Initialize distance vector outside the initial for-loop since we are reinitializing for every start vertex
-    std::vector<int> dist(static_cast<std::vector<int>::size_type>(numVertices), std::numeric_limits<int>::max());
+        // initialize distance vector outside the initial for-loop since we are reinitializing for every start vertex
+        std::vector<int> dist(static_cast<std::vector<int>::size_type>(numVertices), std::numeric_limits<int>::max());
 
-    // Run Bellman-Ford from each vertex
-    for (unsigned long src = 0; src < numVertices; ++src) {
-        // Initialize distances from source
-        std::fill(dist.begin(), dist.end(), std::numeric_limits<int>::max());
-        dist[src] = 0;
+        // run Bellman-Ford from each vertex
+        for (unsigned long src = 0; src < numVertices; ++src) {
+            // initialize distances from source
+            std::fill(dist.begin(), dist.end(), std::numeric_limits<int>::max());
+            dist[src] = 0;
 
-        // Relax all edges V-1 times
-        for (unsigned long i = 1; i < numVertices; ++i) {
-            for (unsigned long u = 0; u < numVertices; ++u) {
-                for (unsigned long v = 0; v < numVertices; ++v) {
-                    if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
-                        dist[v] = dist[u] + edges[u][v];
+            // relax all edges V-1 times
+            for (unsigned long i = 1; i < numVertices; ++i) {
+                for (unsigned long u = 0; u < numVertices; ++u) {
+                    for (unsigned long v = 0; v < numVertices; ++v) {
+                        if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
+                            dist[v] = dist[u] + edges[u][v];
+                        }
                     }
                 }
             }
-        }
 
-        // Check for negative cycles
+        // check for negative cycles
         for (unsigned long u = 0; u < numVertices; ++u) {
             for (unsigned long v = 0; v < numVertices; ++v) {
                 if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
