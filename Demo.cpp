@@ -8,7 +8,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-
+ 
 using ariel::Algorithms;
 using ariel::Graph;
 using namespace std;
