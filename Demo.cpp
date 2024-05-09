@@ -12,7 +12,7 @@
 using ariel::Algorithms;
 using ariel::Graph;
 using namespace std;
-
+ 
 int main()
 {
     ariel::Graph g;
