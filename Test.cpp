@@ -77,7 +77,7 @@ TEST_CASE("Test isContainsCycle")
         {0, 1, 0},
         {1, 0, 1},
         {0, 1, 0}};
-    g.loadGraph(graph);
+    g.loadGraph(graph); 
     CHECK(ariel::Algorithms::isContainsCycle(g) == false);
 
     vector<vector<int>> graph2 = {

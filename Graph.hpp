@@ -21,7 +21,7 @@ class Graph{
         int getVertices();
         int getEdges();
         std::vector<std::vector<int>> getGraph();
-
+ 
 };
 }
 #endif //GRAPH_H

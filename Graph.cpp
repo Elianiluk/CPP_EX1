@@ -21,7 +21,7 @@ namespace ariel {
         vec = vec1;
         int countEdges = 0;
         for(unsigned long i = 0; i < vec1.size(); i++) {
-            for(unsigned long j = 0; j < vec1.size(); j++) {
+            for(unsigned long j = 0;  j < vec1.size(); j++) {
                 if(vec[i][j]!=0)
                     countEdges++;
             }
@@ -29,9 +29,17 @@ namespace ariel {
         numOfEdges = countEdges;   
     }
 
-    int Graph::getVertices(){return numOfVertices;}
-    int Graph::getEdges(){return numOfEdges;}
-    std::vector<std::vector<int>> Graph::getGraph() {return vec;}
+    int Graph::getVertices(){
+        return numOfVertices;
+    }
+
+    int Graph::getEdges(){
+        return numOfEdges;
+    }
+
+    std::vector<std::vector<int>> Graph::getGraph() {
+        return vec;
+    }
     
 
     void Graph::printGraph() {

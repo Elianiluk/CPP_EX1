@@ -9,7 +9,7 @@
    email- elian10119@gmail.com
 */
 
-namespace ariel {
+namespace ariel { 
 
     /*a function that trying to detect if there is a pth from src to des recursivly
       we start at src and we are walking over the graph trying to get to the des,
@@ -21,7 +21,7 @@ namespace ariel {
         }
         visited[src] = true;//mark the vertice we are on him now as true because we can get to him from the original src
         for (unsigned long i = 0; i < edges.size(); i++) {
-            if (edges[src][i] && !visited[i]) {//going through the vertices we can get from src and trying to get to des
+            if (edges[src][i]!=0 && !visited[i]) {//going through the vertices we can get from src and trying to get to des
                 if(isPathHelp(edges, i, des, visited)) {//trying to find a path from i to des because we can get to i from src
                     return true;
                 }
@@ -50,13 +50,14 @@ namespace ariel {
         std::vector<std::vector<int>> edges = g.getGraph();
         for (unsigned long i = 0; i < numVertices; i++) {
             for (unsigned long j = 0; j < numVertices; j++) {
-                if (!isPath(edges, i, j)) {//calling a function that detects if there is a pth from i to j
+                if (!isPath(edges, i, j)) {//calling a function that detects if there is a path from i to j
                     return 0;
                 }
             }
         }
         return 1;
     }
+
     //funtion to detect and print if there is a cycle in the graph
      bool Algorithms::isContainsCycle(Graph g) {
         std::vector<int>::size_type n = static_cast<std::vector<int>::size_type>(g.getVertices());
@@ -66,7 +67,7 @@ namespace ariel {
 
         for (unsigned long i = 0; i < n; ++i) {//try to find a cycle from each vertice
             if (!visited[i]) {
-                if (hasCycleDFS(g, i, visited, parent, cycles)) {//run DFS and try to find a cycle from each vertice
+                if (hasCycleIndex(g, i, visited, parent, cycles)) {//run DFS and try to find a cycle from each vertice
                     // cycle detected, print it
                     for (const auto& cycle : cycles) {
                         std::string result;
@@ -86,36 +87,37 @@ namespace ariel {
     } 
 
     //function that run DFS from a vertice and try to find a cycle
-    bool Algorithms::hasCycleDFS(Graph graph, unsigned long node, std::vector<bool>& visited, std::vector<int>& parent, std::vector<std::vector<int>>& cycles) 
-    {
+    bool Algorithms::hasCycleIndex(Graph graph, unsigned long node, std::vector<bool>& visited, std::vector<int>& parent, std::vector<std::vector<int>>& cycles) {
         visited[node] = true;
-
         auto adjacencyMatrix = graph.getGraph();
         for (unsigned long i = 0; i < graph.getVertices(); ++i) {
-            if (adjacencyMatrix[node][i]) {
+            if (adjacencyMatrix[node][i] != 0) { // Consider all outgoing edges
                 if (!visited[i]) {
-                 parent[i] = node;
-                    if (hasCycleDFS(graph, i, visited, parent, cycles)) {
+                    parent[i] = node;
+                    if (hasCycleIndex(graph, i, visited, parent, cycles)) {
                         return true;
                     }
                 } else if (parent[node] != i) {
-                 // cycle detected, backtrack to find the cycle path
+                    // cycle detected
                     std::vector<int> cycle;
                     int cur = node;
                     while (cur != i) {
                         cycle.push_back(cur);
                         cur = parent[static_cast<std::vector<int>::size_type>(cur)];
-
+                        if (cur == -1) break;
                     }
-                    cycle.push_back(i);
-                    cycle.push_back(node);
-                    cycles.push_back(cycle);
-                    return true;
+                    if (cur != -1) { // If cur is -1, it means it's not a valid cycle due to negative edges
+                        cycle.push_back(i);
+                        cycle.push_back(node);
+                        cycles.push_back(cycle);
+                        return true;
+                    }
                 }
             }
         }
         return false;
     }
+
 
     /*function to detect the shortest path from src to des using bellman ford
       (because the graph can have negative weights), return the shortest path from src to des is exist
@@ -133,7 +135,7 @@ namespace ariel {
         for (unsigned long i = 0; i < g.getVertices() - 1; ++i) {
             for (unsigned long u = 0; u < g.getVertices(); ++u) {
                 for (unsigned long v = 0; v < g.getVertices(); ++v) {
-                    if (edges[u][v] != 0 && dist[u] != 1000 && dist[u] + edges[u][v] < dist[v]) {
+                    if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
                         dist[v] = dist[u] + edges[u][v];
                     }
                 }
@@ -205,66 +207,66 @@ namespace ariel {
 
     std::string Algorithms::isBipartite(Graph g) {
         int numVertices = g.getVertices();
-    std::vector<int> colors(static_cast<size_t>(numVertices), -1); // initialize colors for each vertex
-    std::queue<int> q;
+        std::vector<int> colors(static_cast<size_t>(numVertices), -1); // initialize colors for each vertex
+        std::queue<int> q;
 
-    std::vector<int> group1, group2; // to store the two groups
+        std::vector<int> group1, group2; // to store the two groups
 
-    // start BFS from each uncolored vertex
-    for (unsigned long i = 0; i < numVertices; ++i) {
-        if (colors[i] == -1) {
-            q.push(i);
-            colors[i] = 0; // assign color 0 to the source vertex
-            group1.push_back(i); // add to group 1
+        // start BFS from each uncolored vertex
+        for (unsigned long i = 0; i < numVertices; ++i) {
+            if (colors[i] == -1) {
+                q.push(i);
+                colors[i] = 0; // assign color 0 to the source vertex
+                group1.push_back(i); // add to group 1
 
-            while (!q.empty()) {
-                unsigned long u = static_cast<size_t>(q.front());
-                q.pop();
+                while (!q.empty()) {
+                    unsigned long u = static_cast<size_t>(q.front());
+                    q.pop();
 
                 // search the neighbors and action according to its color
-                std::vector<int> neighbors = g.getGraph()[u];
-                for (unsigned long v = 0; v < numVertices; ++v) {
-                    if (neighbors[v] != 0) { // if v and u are neighbors
-                        if (colors[v] == -1) { // if v is not colored
-                            colors[v] = 1 - colors[u]; // assign the opposite color of u to v
-                            q.push(v);
+                    std::vector<int> neighbors = g.getGraph()[u];
+                    for (unsigned long v = 0; v < numVertices; ++v) {
+                        if (neighbors[v] != 0) { // if v and u are neighbors
+                            if (colors[v] == -1) { // if v is not colored
+                                colors[v] = 1 - colors[u]; // assign the opposite color of u to v
+                                q.push(v);
 
-                            if (colors[v] == 0) {
-                                group1.push_back(v); // add to group 1
-                            } else {
-                                group2.push_back(v); // add to group 2
+                                if (colors[v] == 0) {
+                                    group1.push_back(v); // add to group 1
+                                } else {
+                                    group2.push_back(v); // add to group 2
+                                }
+                            } else if (colors[v] == colors[u]) { // if v has the same color as u it means thr graph isnt bipartite
+                                return "0";
                             }
-                        } else if (colors[v] == colors[u]) { // if v has the same color as u it means thr graph isnt bipartite
-                            return "0";
                         }
                     }
                 }
             }
         }
-    }
 
-    // if the graph is bipartite, build a result string showing the two groups
-    std::string result = "The graph is bipartite: A={";
-    int count=group1.size();
-    for (int vertex : group1) {
-        if(count!=1)
-            result += std::to_string(vertex) + ", ";
-        else
-            result += std::to_string(vertex);
-        count--;  
-    }
-    result += "}, B={";
-    int count2=group2.size();
-    for (int vertex : group2) {
-        if(count2!=1)
-            result += std::to_string(vertex) + ", ";
-        else
-            result += std::to_string(vertex);
-        count2--; 
-    }
-    result += "}";
-    
-    return result;//return the divide into 2 independents groups
+        // if the graph is bipartite, build a result string showing the two groups
+        std::string result = "The graph is bipartite: A={";
+        int count=group1.size();
+        for (int vertex : group1) {
+            if(count!=1)
+                result += std::to_string(vertex) + ", ";
+            else
+                result += std::to_string(vertex);
+            count--;  
+        }
+        result += "}, B={";
+        int count2=group2.size();
+        for (int vertex : group2) {
+            if(count2!=1)
+                result += std::to_string(vertex) + ", ";
+            else
+                result += std::to_string(vertex);
+            count2--; 
+        }
+        result += "}";
+        
+        return result;//return the divide into 2 independents groups
     }
  
 
