@@ -13,7 +13,7 @@ using ariel::Algorithms;
 using ariel::Graph;
 using namespace std;
  
-int main1()
+int main()
 {
     ariel::Graph g;
     // 3x3 matrix that represents a connected graph.
