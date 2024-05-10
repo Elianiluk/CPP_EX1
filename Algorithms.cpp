@@ -146,7 +146,7 @@ namespace ariel {
         for (unsigned long u = 0; u < g.getVertices(); ++u) {
             for (unsigned long v = 0; v < g.getVertices(); ++v) {
                 if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
-                    return "Negative cycle detected.";
+                    return "-1";
                 }
             }
         }
@@ -244,7 +244,7 @@ namespace ariel {
                 }
             }
         }
-
+        
         // if the graph is bipartite, build a result string showing the two groups
         std::string result = "The graph is bipartite: A={";
         int count=group1.size();

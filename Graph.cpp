@@ -17,6 +17,12 @@ namespace ariel {
             exit(1);
         }
 
+        for(unsigned long i = 0; i < vec1.size(); i++) {
+            if(vec1[i][i] != 0) {
+                std::cout << "Invalid graph: The diagonal of the matrix must be 0." << std::endl;
+                exit(1);
+            }
+        }
         numOfVertices = vec1.size();
         vec = vec1;
         int countEdges = 0;
