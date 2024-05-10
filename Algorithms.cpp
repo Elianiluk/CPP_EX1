@@ -146,7 +146,7 @@ namespace ariel {
         for (unsigned long u = 0; u < g.getVertices(); ++u) {
             for (unsigned long v = 0; v < g.getVertices(); ++v) {
                 if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
-                    return "-1";
+                    return "-1";//negative cycle
                 }
             }
         }
@@ -175,14 +175,7 @@ namespace ariel {
             count++;
         }
         path[count]=src;
-        //std::cout <<current<<"       ";
-        // std::cout <<path[count--]<<"->";
-        // std::cout <<path[count--]<<"->";
-        // std::cout <<path[count];
         std::string sh;
-        // count++;
-        // path[count]=src;
-        // unsigned long j=count-1;
         while(count!=0)
         {
             sh+=std::to_string(path[count--])+"->";

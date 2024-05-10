@@ -20,7 +20,7 @@ int main()
     vector<vector<int>> graph = {
             {0, 1, 0},
             {1, 0, 0},
-            {0,0, 0}};
+            {0, 0, 0}};
     g.loadGraph(graph); // Load the graph to the object.
 
     g.printGraph();                                    // Should print: "Graph with 3 vertices and 2 edges."
@@ -51,9 +51,9 @@ int main()
 
     // 5x5 matrix that reprsents a connected weighted graph.
     vector<vector<int>> graph3 = {
-            {0, 1, 0, 0, 0},
+            {0, 1, 2, 0, 0},
             {1, 0, 3, 0, 0},
-            {0, 3, 0, 4, 0},
+            {2, 3, 0, 4, 0},
             {0, 0, 4, 0, 5},
             {0, 0, 0, 5, 0}};
     g.loadGraph(graph3); // Load the graph to the object.
