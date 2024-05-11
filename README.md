@@ -1,20 +1,36 @@
-id-214787483
-name- elian iluk
-email- elian10119@gmail.com
+## README File for System Programming Assignment 1
 
-מטלה 1 תכנות מערכות 2, הסבר על המטלה ואופן המימוש:
-המחלקה Graph:
-במחלקה זו ישנם 3 שדות:
-מספר הקודקודים בגרף- numOfVertices, אותו חישבתי על ידי אורך המטריצה(כלומר אם המטריצה היא 5*5 אז מספר הקודקודים הוא 5), בנוסף קיימת בדיקה האם הגרף ריבועי או לא, במידה והוא לא נחזיר שגיאה
-מספר הצלעות בגרף- numOfEdges, מחושב על ידי מעבר על מטריצה וכל מקום בו אין 0 מזוהה בתור צלע מ- i אל j 
-מטריצת שכנויות המייצגת את הגרף- vec, אותו אנחנו מקבלים מהמשתמש 
-פונקציה loadGraph- מקבלת מטריצה המייצגת את מטריצת השכנויות שלנו ומבצעת השמה לשדה vec, בנוסף סופרת את מספר הצלעות שיש שבגרף ומבצעת השמה בשדה NumOfEdges
-פונקציה printGraph- מדפיסה את מספר הקודקודים והצלעות שיש בגרף
+### Personal Details
+- **ID:** 214787483
+- **Name:** Elian Iluk
+- **Email:** elian10119@gmail.com
 
-המחלקה Algorithms:
-מכילה 5 פונקציות עיקריות על גרפים, נעבור אחד אחד עליהם-
-isConnected- בודקת האם הגרף קשיר חזק, כלומר בודקת האם קיים מסלול מכל קודקוד אל כל קודקוד אחר, אם כן מחזירה TRUE אחרת מחזירה FALSE. בעזרת פונקציות העזר isPath וisPathHelp עוברים על כל זוגות הקודקודים האפשריים ובודקים האם קיים מסלול ביניהם, זה נעשה על ידי הליכה על הגרף מקודקוד src אל קודקוד des באופן רקורסיבי כאשר בכל צעד רקורסיבי הולכים על קודקוד אחד בלבד ומנסים להגיע אל des, במידה והגענו אליו סימן שקיים מסלול מsrc לdes  ונחזיר TRUE.
-isContainsCycle- עוברים קודקוד קודקוד ומנסים למצוא מכל אחד מהם מעגל, זה נעשה על ידי שמירה של מערך בוליאני שמסמן האם במהלך ההליכה שלנו על הגרף כבר היינו על כל קודקוד, אם הגענו אל קודקוד שכבר היינו עליו סימן שיש מעגל, ואז נשחזר את המעגל הזה אל תוך מערך, נדפיס אותו ונחזיר TRUE. הפונקציה הראשית נעזרת בפונקצית העזר hasCycleDFS כאשר בכל פעם הפונקציה הראשית שולחת קודקוד אחר(בודקים אם יש מעגל מכל קודקוד) ופונקצית העזר מחפשת עבורו מעגל, במידה והיא לא מוצאת נחזיר FALSE.
-shortestPath- מקבלת גרף, קודקוד התחלה וקודקוד סיום ומדפיסה את המסלול הקצר ביותר(או הקל ביותר אם מדובר על גרף עם משקלים) מקודקוד ההתחלת לקודקוד הסיום. זה נעשה על ידי מעבר של אלגוריתם בלמן-פורד על הגרף, ראשית מאתחלים מערך שיכיל את משקל המסלול הקל ביותר מקודקוד ההתחלה אל כל קודקוד אחר(בהתחלה כולם מאותחלים לmax integer), לאחר מכן מבצעים n-1 פעמים מעבר על כל הצלעות ומבצעים את פעולת relax עליהם כך פעם מחדש. לאחר מכן, נבצע מעבר אחרון על כל הצלעות ואם עדיין אפשר לעשות relax זה אומר שקיים מעגל שלילי בגרף ונחזיר שגיאה. במידה ועברנו את זה בהצלחה אזי במערך המקורי יהיה לנו את המרחק הקל ביותר מקודקוד ההתחלה לכל קודקוד אחר בגרף, נסתכל על המקום של קודקוד הסיום שקיבלנו במערך, אם הוא max integer אזי נחזיר 1- מכיוון שאין דרך להגיע מקודקוד ההתחלה אליו, במידה והוא לא אזי נשחזר את הצעדים מקודקוד הסיום אל קודקוד ההתחלה, זה יהיה המסלול ונחזיר אותו.
-isBipartite- בודק האם הגרף הוא דו צדדי או לא. מתבצע על ידי ניסיון צביעת הגרף לשני צבעים, מתחילים מהקודקוד הראשון(הקודקוד שמסומן בתור 0) וצובעים אותו בצבע כלשהוא, לאחר מכן עוברים על כל השכנים שלו ובודקים 3 דברים: 1) אם השכן אינו צבוע אזי נצבע אותו בצבע הנגדי של הקודקוד המקורי, 2) אם השכן צבוע בצבע של הקודקוד המקורי אזי הגרף אינו חד צדדי ונחזיר FALSE,3) אם השכן צבוע בצבע הנגדי של הקודקוד המקורי אזי נוסיף אותו לקבוצה הנגדית של הקודקוד המקורי. וכך נעבור על כל הקודקודים בגרף ונחלק אותם ל2 קבוצות, אם המעבר עבר חלק ולא נתקלנו בבעיה אזי נחזיר את החלוקה ל2 קבוצות, אם לא אזי נחזיר שהגרף אינו חד צדדי.
-negativeCycle- בודק האם קיים מעגל שלילי בגרף. מתבצע על ידי הרצת אלגוריתם בלמן פורד על הגרף, כמו שביצענו בפונקציית shortest path, לאחר ביצוע n-1 פעמים(n זה מספר הצלעות) את הפעולה relax אזי נרוץ פעם אחת אחרונה על כל הצלעות, אם ניתן לצבע שוב relax על צלע כלשהיא אזי זה אומר שיש מעגל שלילי בגרף, אם אין פעולת relax אזי נחזיר שאין מעגל שלילי בגרף. 
+### Assignment Overview
+This assignment for System Programming 2 includes the implementation of two main classes: `Graph` and `Algorithms`. Each class plays a crucial role in managing and operating on graph structures. Below is a detailed explanation of each class and their functionalities.
+
+#### Class `Graph`
+
+##### Fields:
+1. **numOfVertices**: Represents the number of vertices in the graph. This is calculated by the size of the adjacency matrix (i.e., a 5x5 matrix implies 5 vertices). The class also checks if the graph is square (rectangular matrices are rejected with an error).
+
+2. **numOfEdges**: Calculated by iterating through the adjacency matrix and counting non-zero entries, which represent an edge from vertex i to vertex j.
+
+3. **adjMatrix (vec)**: A matrix of adjacency that represents the graph, provided by the user.
+
+##### Functions:
+- **loadGraph**: Accepts an adjacency matrix that represents the graph and assigns it to the `vec` field. It also counts the number of edges in the graph and updates `numOfEdges` accordingly.
+
+- **printGraph**: Prints the number of vertices and edges in the graph.
+
+#### Class `Algorithms`
+
+##### Main Functions:
+- **isConnected**: Determines if the graph is strongly connected, i.e., if there is a path from any vertex to every other vertex. It returns TRUE if the graph is connected; otherwise, it returns FALSE. This function uses helper functions `isPath` and `isPathHelp` to recursively check if there is a path between every pair of vertices.
+
+- **isContainsCycle**: Iterates over each vertex and attempts to find a cycle starting from each. It uses a boolean array to mark visited vertices during traversal. If it revisits a vertex, a cycle is detected, backtracked, printed, and returns TRUE. If no cycle is found after checking all vertices, it returns FALSE.
+
+- **shortestPath**: Calculates and prints the shortest (or least weighted) path from a source vertex to a destination vertex using the Bellman-Ford algorithm. It initializes a distance array with maximum integers, relaxes edges repeatedly, and checks for negative weight cycles. If a path exists, it backtracks from the destination to the source to reconstruct the path and returns it.
+
+- **isBipartite**: Checks if the graph is bipartite by trying to color the graph using two colors. It starts from the first vertex and uses BFS to assign colors to vertices. If it successfully colors the graph without conflicts, it returns the two groups; otherwise, it returns FALSE.
+
+- **negativeCycle**: Detects if there is a negative weight cycle in the graph using the Bellman-Ford algorithm similar to `shortestPath`. It attempts an additional relaxation after the main loop; if any relaxation is successful, it indicates a negative weight cycle.
