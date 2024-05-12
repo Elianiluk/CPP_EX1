@@ -89,7 +89,7 @@ TEST_CASE("Test shortestPath")
          {0,0,0,0,0,5},
          {0,0,0,0,0,0}};
     g.loadGraph(graph4); // Load the graph to the object.
-    CHECK(ariel::Algorithms::shortestPath(g, 0, 1) == "-1");
+    CHECK(ariel::Algorithms::shortestPath(g, 0, 1) == "0->1");
 
     vector<vector<int>> graph3= {
         {0, 0, 0},

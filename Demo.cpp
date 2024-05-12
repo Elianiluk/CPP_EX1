@@ -18,9 +18,9 @@ int main()
     ariel::Graph g;
     // 3x3 matrix that represents a connected graph.
     vector<vector<int>> graph = {
-            {0, 1, 0},
-            {1, 0, 0},
-            {0, 0, 0}};
+            {0, 0, 3},
+            {-1, 0, 0},
+            {0, 2, 0}};
     g.loadGraph(graph); // Load the graph to the object.
 
     g.printGraph();                                    // Should print: "Graph with 3 vertices and 2 edges."
@@ -44,7 +44,7 @@ int main()
 
     g.printGraph();                                    // Should print: "Graph with 5 vertices and 4 edges."
     cout << ariel::Algorithms::isConnected(g) << endl;        // Should print: "0" (false).
-    cout << ariel::Algorithms::shortestPath(g, 0,1) << endl; // Should print: "-1" (there is no path between 0 and 4).
+    cout << ariel::Algorithms::shortestPath(g, 0,4) << endl; // Should print: "-1" (there is no path between 0 and 4).
     cout << ariel::Algorithms::isContainsCycle(g) << endl;    // Should print: "The cycle is: 0->1->2->0".
     cout << ariel::Algorithms::isBipartite(g) << endl;        // Should print: "0" (false).
     cout << ariel::Algorithms::negativeCycle(g) << endl;

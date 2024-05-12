@@ -29,7 +29,7 @@ This assignment for System Programming 2 includes the implementation of two main
 
 - **isContainsCycle**: Iterates over each vertex and attempts to find a cycle starting from each. It uses a boolean array to mark visited vertices during traversal. If it revisits a vertex, a cycle is detected, backtracked, printed, and returns TRUE. If no cycle is found after checking all vertices, it returns FALSE.
 
-- **shortestPath**: Calculates and prints the shortest (or least weighted) path from a source vertex to a destination vertex using the Bellman-Ford algorithm. It initializes a distance array with maximum integers, relaxes edges repeatedly, and checks for negative weight cycles. If a path exists, it backtracks from the destination to the source to reconstruct the path and returns it.
+- **shortestPath**: Calculates and prints the shortest (or least weighted) path from a source vertex to a destination vertex using the Bellman-Ford algorithm. It initializes a distance array with maximum integers, relaxes edges repeatedly, and checks for negative weight cycles that only affect the path from the source vertex to the destination vertex(if a graph has negative cycle that affect the shortest path from one vertex to another we will receive error). If a path exists, it backtracks from the destination to the source to reconstruct the path and returns it.
 
 - **isBipartite**: Checks if the graph is bipartite by trying to color the graph using two colors. It starts from the first vertex and uses BFS to assign colors to vertices. If it successfully colors the graph without conflicts, it returns the two groups; otherwise, it returns FALSE.
 

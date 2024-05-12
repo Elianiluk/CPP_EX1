@@ -70,7 +70,7 @@ namespace ariel {
                 if (hasCycleIndex(g, i, visited, parent, cycles)) {//run DFS and try to find a cycle from each vertice
                     // cycle detected, print it
                     for (std::vector<int> cycle : cycles) {
-                        if(cycle.size()<=2)
+                        if(cycle.size()<=2)//a cycle must have at least 3 vertices
                             continue;
                         for (size_t j = 0; j < cycle.size(); ++j) {
                             if (j > 0) 
@@ -91,7 +91,7 @@ namespace ariel {
     bool Algorithms::hasCycleIndex(Graph graph, unsigned long node, std::vector<bool>& visited, std::vector<int>& parent, std::vector<std::vector<int>>& cycles) {
         visited[node] = true;
         for (unsigned long i = 0; i < graph.getVertices(); i++) {
-            if (graph.getGraph()[node][i] != 0) { // Consider all outgoing edges
+            if (graph.getGraph()[node][i] != 0) { 
                 if (!visited[i]) {
                     parent[i] = node;
                     if (hasCycleIndex(graph, i, visited, parent, cycles)) {
@@ -129,53 +129,88 @@ namespace ariel {
         dist[src] = 0;//there is no edge from src to itself
 
         std::vector<std::vector<int>> edges = g.getGraph();
+        std::vector<int> parent(static_cast<unsigned long>(v), -1);
 
         // relax all edges V-1 times, bellman ford algorithm
-        for (unsigned long i = 0; i < g.getVertices() - 1; ++i) {
-            for (unsigned long u = 0; u < g.getVertices(); ++u) {
-                for (unsigned long v = 0; v < g.getVertices(); ++v) {
+        for (unsigned long i = 0; i < g.getVertices() - 1; i++) {
+            for (unsigned long u = 0; u < g.getVertices(); u++) {
+                for (unsigned long v = 0; v < g.getVertices(); v++) {
                     if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
                         dist[v] = dist[u] + edges[u][v];
+                        parent[v] = u;
                     }
                 }
             }
         }
 
         // check for negative cycles
-        for (unsigned long u = 0; u < g.getVertices(); ++u) {
-            for (unsigned long v = 0; v < g.getVertices(); ++v) {
-                if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
-                    return "-1";//negative cycle
-                }
-            }
-        }   
+        // for (unsigned long u = 0; u < g.getVertices(); ++u) {
+        //     for (unsigned long v = 0; v < g.getVertices(); ++v) {
+        //         if (edges[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + edges[u][v] < dist[v]) {
+        //             return "-1";//negative cycle
+        //         }
+        //     }
+        // }   
 
         //construct the shortest path string from src to des
         if(dist[des]==std::numeric_limits<int>::max())
             return "-1";
-        unsigned long current = static_cast<unsigned long>(des);
-        std::vector<int> path(static_cast<std::vector<int>::size_type>(g.getVertices()), -1);
-        unsigned long count=0;
-        while (current != src) {
-            path[count]=current;
-            //std::cout <<current;
-            for (unsigned long v = 0; v < g.getVertices(); ++v) {
-                if (edges[v][current] != 0 && dist[current] == dist[v] + edges[v][current]) {
-                    current = v;
-                    break;
-                }
-            }
-            count++;
-        }
-        path[count]=src;
-        std::string sh;
-        while(count!=0)
+
+        std::vector<int> path;
+        // for (int i = des; i != -1 || i==src; i = parent[static_cast<unsigned long>(i)]) 
+        //     path.push_back(i);
+        int i=des;
+        while(i!=-1 && i!=src)
         {
-            sh+=std::to_string(path[count--])+"->";
-            //count--;
+            path.push_back(i);
+            i=parent[static_cast<unsigned long>(i)];
         }
-        sh+=std::to_string(path[count]);  
-        return sh; //return the shortest path
+        path.push_back(src);
+
+        if (path.empty()) 
+            return "-1";
+
+        //check if the path contains a negative cycle
+        unsigned long last = path.size();
+        for (unsigned long i = last-1; i <= 0; ++i) {
+            unsigned long u = static_cast<unsigned long>(path[i]);
+            unsigned long v = static_cast<unsigned long>(path[(i + 1)]);
+            if (dist[u] + edges[u][v] < dist[v]) {                 
+                return "Negative cycle affects the path";
+            }
+        }
+        
+        std::string sh;
+        for (int i = path.size() - 1; i >= 0; i--) {
+            sh+=std::to_string(path[static_cast<std::vector<int>::size_type>(i)]);
+            if(i!=0)
+                sh+="->";
+        }
+        return sh;
+        //return "The shortest path is: "+std::to_string(dist[des]);//return the shortest path from src to des
+        // unsigned long current = static_cast<unsigned long>(des);
+        // std::vector<int> path(static_cast<std::vector<int>::size_type>(g.getVertices()), -1);
+        // unsigned long count=0;
+        // while (current != src) {
+        //     path[count]=current;
+        //     //std::cout <<current;
+        //     for (unsigned long v = 0; v < g.getVertices(); ++v) {
+        //         if (edges[v][current] != 0 && dist[current] == dist[v] + edges[v][current]) {
+        //             current = v;
+        //             break;
+        //         }
+        //     }
+        //     count++;
+        // }
+        // path[count]=src;
+        // std::string sh;
+        // while(count!=0)
+        // {
+        //     sh+=std::to_string(path[count--])+"->";
+        //     //count--;
+        // }
+        // sh+=std::to_string(path[count]);  
+        // return sh; //return the shortest path
     }
 
     /*in this function we check if a graph is bipartite, to detect this
